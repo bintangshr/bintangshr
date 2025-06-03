@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: Platane/snk@master
         id: snake-gif
         with:
@@ -22,7 +22,7 @@ jobs:
       - name: Debug dist directory
         run: |
           ls -la dist
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: github-snake
           path: dist/*
