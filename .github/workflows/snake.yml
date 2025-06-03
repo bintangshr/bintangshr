@@ -3,15 +3,13 @@ name: Generate Snake
 on:
   schedule:
     - cron: "0 0 * * *" # Runs once a day at midnight UTC
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # Memberikan izin tulis untuk konten repositori
     steps:
-      - uses: actions/checkout@v3 # Checkout kode dari branch utama (misal: main)
+      - uses: actions/checkout@v3
 
       - uses: Platane/snk@v3
         id: snake-gif
@@ -24,52 +22,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Langkah ini tetap sama, mengunggah artefak
       - uses: actions/upload-artifact@v4
         with:
-          name: github-snake-artifacts # Nama artefak
-          path: dist/ # Path folder yang diunggah
+          name: github-snake
+          path: dist/*
 
-      # Langkah baru untuk push ke branch 'output'
       - name: Push to output branch
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # -- START Perubahan di sini --
-
-          # 1. Checkout kembali branch utama untuk mengunduh artefak
-          # Kita perlu file yang diupload Platane/snk, jadi kita kembali ke branch asal
-          # tempat file itu berada di filesystem runner sebelum pindah branch
-          git checkout main # Atau branch default kamu jika bukan 'main'
-
-          # 2. Unduh artefak yang sebelumnya diunggah
-          # Ini akan membuat folder 'github-snake-artifacts' yang berisi folder 'dist'
-          wget -qO- "https://api.github.com/repos/${{ github.repository }}/actions/artifacts?name=github-snake-artifacts" \
-              | grep -oP '"archive_download_url": "\K[^"]+' \
-              | wget --header="Authorization: Bearer ${GITHUB_TOKEN}" -qi -
-          
-          unzip -q github-snake-artifacts.zip # Ekstrak artefak yang diunduh
-
-          # Sekarang file-file yang dihasilkan ada di ./github-snake-artifacts/dist/
-
-          # 3. Checkout atau buat branch 'output'
-          git checkout --orphan output || git checkout output
-
-          # 4. Hapus semua file kecuali .git di branch 'output' untuk membersihkan
-          git rm -rf . || true # '|| true' agar tidak error jika tidak ada file
-
-          # 5. Salin file SVG dari lokasi artefak yang diunduh
-          # Sesuaikan path ini karena file ada di dalam folder artefak/dist
-          cp -r github-snake-artifacts/dist/* .
-
-          # -- END Perubahan di sini --
-
-          # 6. Tambahkan dan commit file
-          git add github-snake.svg github-snake-dark.svg ocean.gif # Tambahkan file-file yang dihasilkan
-          git commit -m "Generate snake animation" || echo "No changes to commit"
-
-          # 7. Paksa push ke branch 'output'
-          git push -f origin output
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git add dist
+          git commit -m "Generate snake" || echo "No changes to commit"
+          git push origin main
