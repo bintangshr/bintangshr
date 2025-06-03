@@ -13,7 +13,7 @@
 
 ### 🚀 Tentang Saya
 
-- 🔭 Sedang membangun sistem **Pengajuan Dana UMKM** berbasis Laravel 11  
+- 🔭 Sedang membangun sistem **Pengajuan Dana UMKM** berbasis Laravel 11 
 - 💡 Fokus migrasi dari **PHP Native → Laravel Modern**
 - 📊 Dashboard dengan **Chart.js**, statistik, dan dark mode
 - 💬 Bisa hubungi saya untuk: `Laravel`, `Blade`, `TailwindCSS`, `UX Dashboard`
@@ -36,7 +36,7 @@
 ### 🚀 Proyek Unggulan
 
 #### 💼 Website Pengajuan Dana UMKM
-Aplikasi Laravel 11 yang memudahkan pelaku UMKM untuk mengajukan dana usaha secara digital.  
+Aplikasi Laravel 11 yang memudahkan pelaku UMKM untuk mengajukan dana usaha secara digital. 
 Fitur: login custom, dashboard statistik, grafik pengajuan, dark mode.
 
 🔗 [Lihat Repository](https://github.com/bintangshr/UAS-CIHUYY)
@@ -75,7 +75,7 @@ Fitur: login custom, dashboard statistik, grafik pengajuan, dark mode.
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bintangshr/bintangshr/output/github-snake-dark.svg" />
-    <img alt="github contribution snake animation" src="https://raw.githubusercontent.com/bintangshr/bintangshr/output/github-snake.svg" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bintangshr/bintangshr/main/dist/github-snake-dark.svg" />
+    <img alt="github contribution snake animation" src="https://raw.githubusercontent.com/bintangshr/bintangshr/main/dist/github-snake.svg" />
   </picture>
 </p>
