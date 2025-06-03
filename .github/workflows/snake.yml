@@ -3,37 +3,61 @@ name: Generate Snake
 on:
   schedule:
     - cron: "0 0 * * *" # Runs once a day at midnight UTC
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual trigger
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Pastikan GITHUB_TOKEN memiliki izin tulis (write)
+    permissions:
+      contents: write # Memberikan izin tulis untuk konten repositori
     steps:
+      # Checkout kode repositori kamu. Gunakan v3 untuk konsistensi.
       - uses: actions/checkout@v3
 
+      # Gunakan aksi Platane/snk untuk menghasilkan gambar. Gunakan v3.
       - uses: Platane/snk@v3
         id: snake-gif
         with:
           github_user_name: ${{ github.repository_owner }}
+          # Pastikan nama file output cocok dengan yang di README kamu
           outputs: |
-            dist/github-snake.svg
-            dist/github-snake-dark.svg?palette=github-dark
+            dist/github-snake.svg # Ini untuk light mode
+            dist/github-snake-dark.svg?palette=github-dark # Ini untuk dark mode
             dist/ocean.gif?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Unggah artefak hasil generate. Ini bukan wajib untuk README, tapi bagus untuk debugging.
       - uses: actions/upload-artifact@v4
         with:
-          name: github-snake
-          path: dist/*
+          name: github-snake-artifacts
+          path: dist/ # Unggah seluruh folder dist
 
+      # Push file yang dihasilkan ke branch 'output'
       - name: Push to output branch
+        # Karena push ke branch lain, GITHUB_TOKEN harus di-set di env step
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
-          git add dist
-          git commit -m "Generate snake" || echo "No changes to commit"
-          git push origin main
+          # Konfigurasi Git user
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Buat branch 'output' jika belum ada dan checkout ke dalamnya
+          git checkout --orphan output || git checkout output
+
+          # Hapus semua file kecuali .git jika branch output sudah ada isinya
+          # Ini penting agar tidak ada file lama yang menumpuk jika branch output sudah ada
+          git rm -rf .
+          
+          # Salin file SVG dari folder 'dist' ke root branch 'output'
+          # Karena README kamu tidak pakai /dist/ di URL setelah /output/
+          cp -r dist/* .
+
+          # Tambahkan dan commit file
+          git add github-snake.svg github-snake-dark.svg ocean.gif # Tambahkan file-file yang dihasilkan
+          git commit -m "Generate snake animation" || echo "No changes to commit"
+
+          # Paksa push ke branch 'output'
+          git push -f origin output
