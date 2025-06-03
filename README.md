@@ -5,6 +5,10 @@
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&duration=3000&color=00C8FF&center=true&vCenter=true&lines=Laravel+Developer+%7C+Chart.js+User;Fullstack+Web+App+Builder;Loves+Dark+Mode+Dashboards" alt="Typing SVG" />
 </p>
 
+<p align="center">
+  ![Visitors](https://komarev.com/ghpvc/?username=bintangshr&color=blue)
+</p>
+
 ---
 
 ### 🚀 Tentang Saya
@@ -67,6 +71,11 @@ Fitur: login custom, dashboard statistik, grafik pengajuan, dark mode.
 
 ---
 
+### 🐍 GitHub Contribution Snake
+
 <p align="center">
-  <img src="https://raw.githubusercontent.com/bintangshr/bintangshr/main/dist/github-contribution-grid-snake.svg" alt="snake animation" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bintangshr/bintangshr/output/github-snake-dark.svg" />
+    <img alt="github contribution snake animation" src="https://raw.githubusercontent.com/bintangshr/bintangshr/output/github-snake.svg" />
+  </picture>
 </p>
