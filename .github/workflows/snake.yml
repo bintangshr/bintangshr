@@ -19,6 +19,9 @@ jobs:
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Debug dist directory
+        run: |
+          ls -la dist
       - uses: actions/upload-artifact@v2
         with:
           name: github-snake
@@ -29,4 +32,4 @@ jobs:
           git config user.email github-actions@github.com
           git add dist
           git commit -m "Generate snake" || echo "No changes to commit"
-          git push origin output # Or your default branch if you want it here
+          git push origin main # Or your default branch if you want it here
