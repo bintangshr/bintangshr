@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  ![Visitors](https://komarev.com/ghpvc/?username=bintangshr&color=blue)
+  <img src="https://komarev.com/ghpvc/?username=bintangshr&color=blue" alt="Profile Views" />
 </p>
 
 ---
