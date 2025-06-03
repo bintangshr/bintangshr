@@ -68,5 +68,5 @@ Fitur: login custom, dashboard statistik, grafik pengajuan, dark mode.
 ---
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/bintangshr/bintangshr/output/github-contribution-grid-snake.svg" alt="snake animation" />
+  <img src="https://raw.githubusercontent.com/bintangshr/bintangshr/main/dist/github-contribution-grid-snake.svg" alt="snake animation" />
 </p>
