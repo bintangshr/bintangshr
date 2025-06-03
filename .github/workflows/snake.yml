@@ -3,13 +3,14 @@ name: Generate Snake
 on:
   schedule:
     - cron: "0 0 * * *" # Runs once a day at midnight UTC
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: Platane/snk@v3
         id: snake-gif
         with:
@@ -20,14 +21,16 @@ jobs:
             dist/ocean.gif?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v3
+
+      - uses: actions/upload-artifact@v4
         with:
           name: github-snake
           path: dist/*
+
       - name: Push to output branch
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add dist
           git commit -m "Generate snake" || echo "No changes to commit"
-          git push origin main # Or your default branch if you want it here
+          git push origin main
