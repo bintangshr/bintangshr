@@ -8,56 +8,68 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Pastikan GITHUB_TOKEN memiliki izin tulis (write)
     permissions:
       contents: write # Memberikan izin tulis untuk konten repositori
     steps:
-      # Checkout kode repositori kamu. Gunakan v3 untuk konsistensi.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3 # Checkout kode dari branch utama (misal: main)
 
-      # Gunakan aksi Platane/snk untuk menghasilkan gambar. Gunakan v3.
       - uses: Platane/snk@v3
         id: snake-gif
         with:
           github_user_name: ${{ github.repository_owner }}
-          # Pastikan nama file output cocok dengan yang di README kamu
           outputs: |
-            dist/github-snake.svg # Ini untuk light mode
-            dist/github-snake-dark.svg?palette=github-dark # Ini untuk dark mode
+            dist/github-snake.svg
+            dist/github-snake-dark.svg?palette=github-dark
             dist/ocean.gif?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Unggah artefak hasil generate. Ini bukan wajib untuk README, tapi bagus untuk debugging.
+      # Langkah ini tetap sama, mengunggah artefak
       - uses: actions/upload-artifact@v4
         with:
-          name: github-snake-artifacts
-          path: dist/ # Unggah seluruh folder dist
+          name: github-snake-artifacts # Nama artefak
+          path: dist/ # Path folder yang diunggah
 
-      # Push file yang dihasilkan ke branch 'output'
+      # Langkah baru untuk push ke branch 'output'
       - name: Push to output branch
-        # Karena push ke branch lain, GITHUB_TOKEN harus di-set di env step
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Konfigurasi Git user
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Buat branch 'output' jika belum ada dan checkout ke dalamnya
+          # -- START Perubahan di sini --
+
+          # 1. Checkout kembali branch utama untuk mengunduh artefak
+          # Kita perlu file yang diupload Platane/snk, jadi kita kembali ke branch asal
+          # tempat file itu berada di filesystem runner sebelum pindah branch
+          git checkout main # Atau branch default kamu jika bukan 'main'
+
+          # 2. Unduh artefak yang sebelumnya diunggah
+          # Ini akan membuat folder 'github-snake-artifacts' yang berisi folder 'dist'
+          wget -qO- "https://api.github.com/repos/${{ github.repository }}/actions/artifacts?name=github-snake-artifacts" \
+              | grep -oP '"archive_download_url": "\K[^"]+' \
+              | wget --header="Authorization: Bearer ${GITHUB_TOKEN}" -qi -
+          
+          unzip -q github-snake-artifacts.zip # Ekstrak artefak yang diunduh
+
+          # Sekarang file-file yang dihasilkan ada di ./github-snake-artifacts/dist/
+
+          # 3. Checkout atau buat branch 'output'
           git checkout --orphan output || git checkout output
 
-          # Hapus semua file kecuali .git jika branch output sudah ada isinya
-          # Ini penting agar tidak ada file lama yang menumpuk jika branch output sudah ada
-          git rm -rf .
-          
-          # Salin file SVG dari folder 'dist' ke root branch 'output'
-          # Karena README kamu tidak pakai /dist/ di URL setelah /output/
-          cp -r dist/* .
+          # 4. Hapus semua file kecuali .git di branch 'output' untuk membersihkan
+          git rm -rf . || true # '|| true' agar tidak error jika tidak ada file
 
-          # Tambahkan dan commit file
+          # 5. Salin file SVG dari lokasi artefak yang diunduh
+          # Sesuaikan path ini karena file ada di dalam folder artefak/dist
+          cp -r github-snake-artifacts/dist/* .
+
+          # -- END Perubahan di sini --
+
+          # 6. Tambahkan dan commit file
           git add github-snake.svg github-snake-dark.svg ocean.gif # Tambahkan file-file yang dihasilkan
           git commit -m "Generate snake animation" || echo "No changes to commit"
 
-          # Paksa push ke branch 'output'
+          # 7. Paksa push ke branch 'output'
           git push -f origin output
