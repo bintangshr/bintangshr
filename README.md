@@ -16,7 +16,7 @@
 - 🔭 Sedang membangun sistem **Pengajuan Dana UMKM** berbasis Laravel 11 
 - 💡 Fokus migrasi dari **PHP Native → Laravel Modern**
 - 📊 Dashboard dengan **Chart.js**, statistik, dan dark mode
-- 💬 Bisa hubungi saya untuk: `Laravel`, `Blade`, `TailwindCSS`, `UX Dashboard`
+- 💬 Bisa hubungi saya untuk: `Laravel`, `Blade`, `TailwindCSS`
 - ⚡ Fun Fact: Saya suka membangun sistem real-world yang berdampak
 
 ---
